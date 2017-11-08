@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Document</title>
+
+</head>
+<body>
+	<form action="{% url 'create' %}" method="POST">
+	{{form.as_p}}
+	{% csrf_token %}
+	<input type = "submit" value="create">
+	</form>
+
+</body>
+</html>

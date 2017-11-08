@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Document</title>
+
+</head>
+<body>
+	<form action="{% url 'update' PostHome_id=item.id %}" method="POST">
+	{{form.as_p}}
+	{% csrf_token %}
+	<input type = "submit" value="update">
+	</form>
+
+</body>
+</html>
