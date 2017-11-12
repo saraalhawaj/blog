@@ -1,32 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>Document</title>
+{% extends "base.html" %}
 
-</head>
-<body>
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+{% block heading %} 
+List 
 
-	<a href="{%url 'create' %}"><button>create</button></a>
+{% endblock heading %}
+
+{% block content %}
+
+	<div class="jumbotron">
+		<h1 class="display-3">my posts</h1>
+		<a href="{%url 'create' %}"><button class="btn btn-success"">create</button></a>
+	</div>
+
+
+	<div class="row">
 	{% for item in post_items %}
-	<ul>
-		<a href="{%url 'detail' PostHome_id=item.id %}"><li>{{item.title}}<li/>
-		<li>{{item.content}}</li>
-		<li>{{item.id}}</li></a>
-		<a href="{%url 'update' PostHome_id=item.id %}"><button>Update</button></a>
-		<a href="{%url 'delete' PostHome_id=item.id %}"><button>delete</button></a>
+		<div class=" col-xs-4 col-sm-4 col-md-3 col-lg-3">
+			{% if item.img %}
+				<img class="card-img-top" src="{{item.img.url}}" alt="card image cap">
+				{% endif %}
+			<div class="card" style="width: 18rem;">
+				<div class="card-body">
+					<h4 class="card-title"><a href="{%url 'detail' PostHome_id=item.id %}">{{item.title}}</a></h4>
+					<h6 class="card-subtitle mb-2 text-muted">{{item.id}}</h6>
+					<p class="card-text">{{item.content}}</p>
+					<a href="{%url 'update' PostHome_id=item.id %}" class="card-link , btn btn-primary">Update</a>
+					<a href="{%url 'delete' PostHome_id=item.id %}" class="card-link , btn btn-warning">delete</a>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
 
 
-	</ul>
-		{% endfor %}
+<div class="pagination">
+	<span class="step-links">
+		{% if post_items.has_previous %}
+			<a href="?page={{ post_items.previous_page_number }}">previous</a>
+		{% endif %}
 
+		<span class="current">
+			Page {{ post_items.number }} of {{ post_items.paginator.num_pages }}.
+		</span>
 
-</body>
-</html>
+		{% if post_items.has_next %}
+			<a href="?page={{ post_items.next_page_number }}">next</a>
+		{% endif %}
+	</span>
+</div>
+{% endblock content %}
