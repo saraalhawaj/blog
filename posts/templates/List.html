@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load share %}
+
 {% block heading %} 
 List 
 
@@ -7,11 +9,19 @@ List
 
 {% block content %}
 
+
 	<div class="jumbotron">
 		<h1 class="display-3">my posts</h1>
-		<a href="{%url 'create' %}"><button class="btn btn-success"">create</button></a>
+		<a href="{%url 'create' %}"><button class="btn btn-success">create</button></a>
+
+		<form class"form-group" action="{% url 'list' %}" method="GET">
+		<input type="text" name="q" placeholder="search..." value="{{request.GET.q}}">
+		<input class="btn btn-primary" type="submit" value="search">
+	</form>
+
 	</div>
 
+	
 
 	<div class="row">
 	{% for item in post_items %}
@@ -21,11 +31,23 @@ List
 				{% endif %}
 			<div class="card" style="width: 18rem;">
 				<div class="card-body">
-					<h4 class="card-title"><a href="{%url 'detail' PostHome_id=item.id %}">{{item.title}}</a></h4>
-					<h6 class="card-subtitle mb-2 text-muted">{{item.id}}</h6>
+					<h4 class="card-title"><a href="{%url 'detail' post_slug=item.slug %}">{{item.title}}</a></h4>
+					<small>{{item.publish_date|timesince}}</small>
+					{% if item.draft %}
+						<span class="text-danger">Draft</span>
+					{% endif %}
+					{% if item.publish_date > today %}
+						<span class="text-success">Future Post</span>
+					{% endif %}
+
+					<h6 class="card-subtitle mb-2 text-muted">{{item.slug}}</h6>
 					<p class="card-text">{{item.content}}</p>
-					<a href="{%url 'update' PostHome_id=item.id %}" class="card-link , btn btn-primary">Update</a>
-					<a href="{%url 'delete' PostHome_id=item.id %}" class="card-link , btn btn-warning">delete</a>
+					<p class="card-text">{{item.author.username}}</p>
+					<p class="card-text">{{item.author.get_full_name}}</p>
+					<p class="card-text">{{item.author.last_login}}</p>
+					<p class="card-text">{{item.author.date_joined}}</p>
+					<a href="{%url 'update' post_slug=item.slug %}" class="card-link btn btn-primary">Update</a>
+					<a href="{%url 'delete' post_slug=item.slug %}" class="card-link btn btn-warning">delete</a>
 				</div>
 			</div>
 		</div>
@@ -44,7 +66,7 @@ List
 		</span>
 
 		{% if post_items.has_next %}
-			<a href="?page={{ post_items.next_page_number }}">next</a>
+			<a href="?page={{ post_items.next_page_number }}&q={{request.GET.q}}">next</a>
 		{% endif %}
 	</span>
 </div>
